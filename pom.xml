@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.vaadin.directory</groupId>
-    <artifactId>light-vaadin</artifactId>
+    <artifactId>runnable-jar-vaadin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -40,7 +40,7 @@
         </dependency>
         
         <!-- Instead of Valo, we use dawn, from CDN -->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>org.peimari</groupId>
             <artifactId>dawn</artifactId>
             <version>4</version>
@@ -102,6 +102,42 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- make the jar executable -->
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>cat</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>cat</executable>
+                            <arguments>
+                                <argument>${basedir}/src/main/resources/run.sh</argument>
+                                <argument>${basedir}/target/${project.build.finalName}.jar</argument>
+                            </arguments>
+                            <outputFile>${basedir}/target/${project.build.finalName}</outputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>chmod</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>chmod</executable>
+                            <commandlineArgs>u+x ${basedir}/target/${project.build.finalName}</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
     </build>
     
@@ -111,4 +147,5 @@
             <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
     </repositories>
+    <name>runnable-jar-vaadin</name>
 </project>
