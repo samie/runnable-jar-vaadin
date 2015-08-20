@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <vaadin.version>7.4.2</vaadin.version>
+        <vaadin.version>7.5.3</vaadin.version>
         <jetty.version>9.2.3.v20140905</jetty.version>
     </properties>
     
@@ -32,18 +32,22 @@
                     <groupId>com.vaadin</groupId>
                     <artifactId>vaadin-sass-compiler</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.vaadin.external.streamhtmlparser</groupId>
+                    <artifactId>streamhtmlparser-jsilver</artifactId>
+                </exclusion>
             </exclusions>        
         </dependency>
         
-        <!-- Instead of Valo, we use dawn -->
-        <dependency>
+        <!-- Instead of Valo, we use dawn, from CDN -->
+<!--        <dependency>
             <groupId>org.peimari</groupId>
             <artifactId>dawn</artifactId>
             <version>4</version>
-        </dependency>        
+        </dependency>        -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
+            <artifactId>jetty-servlet</artifactId>
             <version>${jetty.version}</version>
             <type>jar</type>
         </dependency>
@@ -65,27 +69,39 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.vaadin.lightvaadin.App</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> 
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>com/google/**</exclude>
+                                        <exclude>img/**</exclude>
+                                        <exclude>css/**</exclude>
+                                        <exclude>**/*.java</exclude>
+                                        <exclude>**/*.scss</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>org.vaadin.lightvaadin.App</Main-Class>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>   
+            </plugin>
         </plugins>
     </build>
     

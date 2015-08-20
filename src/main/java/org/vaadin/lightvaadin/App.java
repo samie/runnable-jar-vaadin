@@ -23,6 +23,7 @@ public class App {
 
         ServletHolder sh = new ServletHolder(new VaadinServlet());
         contextHandler.addServlet(sh, "/*");
+        contextHandler.setInitParameter("Resources", "http://virit.in/dawn/11");
         contextHandler.setInitParameter("ui", HelloWorldUI.class.getCanonicalName());
 
         // Register cdn.virit.in if present
