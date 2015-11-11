@@ -14,8 +14,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class App {
 
-    public static void main(String[] args) {
-        Server server = new Server(8080);
+    public static void main(String[] args) throws Exception {
+        Server server = start(8080);
+        server.join();
+    }
+
+    public static Server start(int port) throws Exception {
+        Server server = new Server(port);
 
         ServletContextHandler contextHandler
                 = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -37,13 +42,7 @@ public class App {
         }
 
         server.setHandler(contextHandler);
-
-        try {
-            server.start();
-            server.join();
-
-        } catch (Exception ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        server.start();
+        return server;
     }
 }
