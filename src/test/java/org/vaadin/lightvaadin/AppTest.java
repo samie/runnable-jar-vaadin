@@ -1,5 +1,6 @@
 package org.vaadin.lightvaadin;
 
+import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,6 +23,8 @@ public class AppTest {
       App.start(port);
       started.set(true);
     }
+    Configuration.startMaximized = false;
+    Configuration.reportsFolder = "target/surefire-reports";
   }
 
   @Test
